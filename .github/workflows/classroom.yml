@@ -19,7 +19,7 @@ jobs:
       with:
         test-name: Test 1
         setup-command: ''
-        command: make test
+        command: gcc priority.c -o priority && ./priority
         input: |-
           5
           P1 0 5 2
@@ -60,15 +60,17 @@ jobs:
           P4 3 4 2
         expected-output: |-
           Waiting Time:
-          P1 3
+          P1 11
           P2 0
-          P3 6
+          P3 4
+          P4 5
           Turnaround Time:
-          P1 8
-          P2 3
-          P3 10
-          Average Waiting Time: 3.00
-          Average Turnaround Time: 7.00
+          P1 14
+          P2 5
+          P3 6
+          P4 9
+          Average Waiting Time: 5.00
+          Average Turnaround Time: 8.50
         comparison-method: exact
         timeout: 10
         max-score: 10
@@ -79,8 +81,8 @@ jobs:
         test-name: Test 4
         setup-command: ''
         command: gcc priority.c -o priority && ./priority
-        input: |2-
-
+        input: |-
+          3
           P1 2 5 2
           P2 3 3 3
           P3 4 4 1
