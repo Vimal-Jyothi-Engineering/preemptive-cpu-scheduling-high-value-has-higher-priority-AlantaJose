@@ -7,68 +7,62 @@ struct process{
     int rt;
     int ct, wt, tat;
 };
-
 int main(){
     int n;
     scanf("%d",&n);
-
-    struct process p[20];
+    struct process p[100];
     int i;
-
+    float avg_wt=0,avg_tat=0;
     for(i=0;i<n;i++){
         scanf("%s %d %d %d",p[i].pid,&p[i].at,&p[i].bt,&p[i].pr);
         p[i].rt=p[i].bt;
     }
-
-    int completed=0,time=0,idx;
-    int max_pr;
-
+    int completed=0,time=0,current=-1;
     while(completed<n){
-        idx=-1;
-        max_pr=-1;
-
+        int idx=-1;
         for(i=0;i<n;i++){
             if(p[i].at<=time && p[i].rt>0){
-                if(p[i].pr>max_pr){
-                    max_pr=p[i].pr;
+                if(idx==-1){
                     idx=i;
+                }
+                else if(p[i].pr>p[idx].pr){
+                    idx=i;
+                }
+                else if(p[i].pr==p[idx].pr){
+                    if(p[i].at<p[idx].at)
+                        idx=i;
+                    else if(p[i].at==p[idx].at && i<idx)
+                      idx=i;
                 }
             }
         }
-
-        if(idx!=-1){
-            p[idx].rt--;
+        if(idx==-1){
             time++;
-
-            if(p[idx].rt==0){
-                p[idx].ct=time;
-                completed++;
-            }
+            current=-1;
+            continue;
         }
-        else{
-            time++;
+        p[idx].rt--;
+        time++;
+        current=idx;
+        if(p[idx].rt==0){
+            p[idx].ct=time;
+            completed++;
+            current=-1;
         }
     }
-
-    float avg_wt=0,avg_tat=0;
-
     for(i=0;i<n;i++){
         p[i].tat=p[i].ct-p[i].at;
         p[i].wt=p[i].tat-p[i].bt;
         avg_wt+=p[i].wt;
         avg_tat+=p[i].tat;
     }
-
     printf("Waiting Time:\n");
     for(i=0;i<n;i++)
         printf("%s %d\n",p[i].pid,p[i].wt);
-
     printf("Turnaround Time:\n");
     for(i=0;i<n;i++)
         printf("%s %d\n",p[i].pid,p[i].tat);
-
     printf("Average Waiting Time: %.2f\n",avg_wt/n);
     printf("Average Turnaround Time: %.2f\n",avg_tat/n);
-
     return 0;
 }
